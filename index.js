@@ -8,8 +8,19 @@ app.use(express.static(__dirname + '/public'));
 server.listen(8000);
 
 io.sockets.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    console.log(data);
+  socket.on('offer', function(desc) {
+    io.sockets.emit('callee offer', desc);
+  });
+
+  socket.on('answer', function(desc) {
+    io.sockets.emit('caller answer', desc);
+  });
+
+  socket.on('new caller candidate', function(candidate) {
+    io.sockets.emit('callee candidate', candidate);
+  });
+
+  socket.on('new callee candidate', function(candidate) {
+    io.sockets.emit('caller candidate', candidate);
   });
 });

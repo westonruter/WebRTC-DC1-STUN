@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Caller</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/adapter.js"></script>
+  </head>
+  <body>
+    <textarea id="messageBox" disabled="true"></textarea>
+    <!--<button id="close" disabled>Close</button>-->
+    <script>
+      var socket = io.connect('http://localhost');
+      var peerConnection, receiveChannel;
+
+      socket.on('callee offer', function (desc) {
+         var peerConnectionConstraint = {
+          optional: [ { DtlsSrtpKeyAgreement: true } ]
+        };
+        var config = {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]};
+        peerConnection = new RTCPeerConnection(config, peerConnectionConstraint);
+        peerConnection.setRemoteDescription(new RTCSessionDescription(desc));
+        peerConnection.createAnswer(gotDescription);
+        peerConnection.onicecandidate = iceCallback;
+        peerConnection.ondatachannel = receiveChannelCallback;
+      });
+      socket.on('callee candidate', function (candidate) {
+        peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+      });
+
+      //var closeButton = document.getElementById('close');
+      var messageBox = document.getElementById('messageBox');
+
+      function iceCallback(event) {
+        if (event.candidate) {
+          socket.emit('new callee candidate', event.candidate);
+        }
+      }
+
+      function gotDescription(desc) {
+        peerConnection.setLocalDescription(desc);
+        socket.emit('answer', desc);
+      }
+
+      function receiveChannelCallback(event) {
+        receiveChannel = event.channel;
+        receiveChannel.onmessage = onReceiveMessageCallback;
+        //receiveChannel.onopen = onReceiveChannelStateChange;
+        //receiveChannel.onclose = onReceiveChannelStateChange;
+      }
+
+      function onReceiveMessageCallback(event) {
+        messageBox.value = event.data;
+      }
+    </script>
+
+  </body>
+</html>
