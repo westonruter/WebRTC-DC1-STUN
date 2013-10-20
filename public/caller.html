@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Caller</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/adapter.js"></script>
+  </head>
+  <body>
+    <button id="connect">Connect</button>
+    <script>
+      var socket = io.connect('http://localhost');
+      socket.on('news', function (data) {
+        console.log(data);
+        socket.emit('my other event', { my: 'data' });
+      });
+
+      var connectButton = document.getElementById('connect');
+      connectButton.onclick = createCall;
+
+      function createCall() {
+        var peerConnectionConstraint = {
+          optional: [ { RtpDataChannels: true } ]
+        };
+        var dataConstraint = {
+          reliable : false
+        };
+      }
+    </script>
+
+  </body>
+</html>
