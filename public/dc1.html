@@ -45,8 +45,6 @@ h2 {
 <p>Choose SCTP or RTP for transmitting data.</p>
 <input type="radio" id="useSctp" name="transportbtn" checked/>
 <label for="useSctp">Use SCTP</label>
-<input type="radio" id="useRtp" name="transportbtn"/>
-<label for="useRtp">Use RTP</label>
 </form>
 <button id="startButton">Start</button>
 <button id="sendButton" disabled>Send Data</button>
@@ -87,14 +85,8 @@ function createConnection() {
     dataConstraint = {reliable: true};
     trace('Using SCTP based Data Channels');
   } else {
-    if (!rtp_select.checked) {
-      // Use rtp data channels for chrome versions older than M31.
-      trace('Using RTP based Data Channels,' +
-            'as you are on an older version than M31.');
-      alert('Reverting to RTP based data channels,' +
-            'as you are on an older version than M31.');
-      rtp_select.checked = true;
-    }
+    alert('You need to be using a newer browser');
+    throw new Error('You need to be using a newer browser');
   }
   pc1 = new RTCPeerConnection(servers, pcConstraint);
   trace('Created local peer connection object pc1');
