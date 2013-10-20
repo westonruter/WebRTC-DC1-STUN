@@ -1,4 +1,4 @@
-/*global RTCSessionDescription, RTCSessionDescription*/
+/*global RTCSessionDescription, RTCSessionDescription, console */
 
 var RTCPeerConnection = null;
 var getUserMedia = null;
