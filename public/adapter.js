@@ -1,3 +1,5 @@
+/*global RTCSessionDescription, RTCSessionDescription*/
+
 var RTCPeerConnection = null;
 var getUserMedia = null;
 var attachMediaStream = null;
